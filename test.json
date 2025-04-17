@@ -1,0 +1,22 @@
+{
+    "email": "admin@example.com",
+    "country_code": "+234",
+    "phone_number": "651288091",
+    "first_name": "admin",
+    "last_name": "admin",
+    "role": "ADMIN",
+    "login": "admin",
+    "password":"User@123"
+  },
+  {
+    "id": "c57c70a0-938f-4ff4-b93b-e1dfc3e8322e",
+    "name": "2024-2025",
+    "start_date": "2024-10-01",
+    "end_date": "2025-07-15",
+    "is_active": true
+  },{
+    "id": "8e8921b6-439e-4c1e-9444-3172d1ab8d95",
+    "name": "Génie Logiciel"
+  }
+  
+  
