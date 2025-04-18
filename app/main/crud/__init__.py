@@ -10,3 +10,4 @@ from .group_crud import *
 from .students_crud import *
 from .subjects_crud import *
 from .examns_type_crud import *
+from .teacher_crud import *

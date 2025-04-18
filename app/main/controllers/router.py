@@ -11,10 +11,11 @@ from .group_controller import router as classes
 from .students_controller import router as students
 from .subjects_controller import router as subjects
 from .examns_type_controller import router as type_exam
-
+from .teacher_controller import router as teacher
 api_router = APIRouter()
 
 api_router.include_router(migration)
+api_router.include_router(teacher)
 api_router.include_router(authentication)
 api_router.include_router(user)
 api_router.include_router(storage)

@@ -15,43 +15,37 @@ from app.main.utils.uploads import download_and_save_file, get_access_control, g
 from app.main.core.dependencies import get_db, TokenRequired
 from app.main import models
 MAX_TOKENS = 4096
-
-router = APIRouter(prefix="/storages", tags=["storages"])
 MAX_FILE_SIZE = 2 * 1024 * 1024  # 2 Mo
-
-@router.post("/upload",response_model = FileSlim, status_code=200)
+router = APIRouter(prefix="/storages", tags=["storages"])
+@router.post("/upload", response_model=FileSlim, status_code=200)
 async def upload_file(
-        *,
-        db: Session = Depends(get_db),
-        file: UploadFile = File(...),
-        current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN"]))       
+    *,
+    db: Session = Depends(get_db),
+    file: UploadFile = File(...),
+    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN", "ADMIN"]))       
 ):
     """
     Upload a file.
     """
     try:
-        # Vérifie la taille du fichier
         contents = await file.read()
+        
         if len(contents) > MAX_FILE_SIZE:
             raise HTTPException(
                 status_code=400,
-                detail="Le fichier est trop lourd. Taille maximale autorisée : 2 Mo."
+                detail="Le fichier est trop lourd. La taille maximale autorisée est de 2 Mo."
             )
         
-        # Revenir au début du fichier
-        file.file.seek(0)
-        # Save the file temporarily
+        file.file.seek(0)  # Revenir au début du fichier
         temp_file_path = file_utils.save_temp_file(file)
         
-        # Upload to Cloudinary
         public_id = str(uuid.uuid4())
         upload_result = upload_to_cloudinary(temp_file_path, public_id)
 
-        # Delete the temporary file
         file_utils.delete_temp_file(temp_file_path)
-        # Prepare file data for database
+
         file_data = StorageCreate(
-            uuid = str(uuid.uuid4()),
+            uuid=str(uuid.uuid4()),
             file_name=file.filename,
             cloudinary_file_name=upload_result.get("original_filename"),
             url=upload_result.get("secure_url"),
@@ -64,16 +58,18 @@ async def upload_file(
             size=upload_result.get("bytes"),
         )
 
-        # Store file data in the database
         stored_file = store_file(db, file_data)
 
         return stored_file
+
+    except HTTPException as e:
+        raise e  # On laisse passer l'erreur personnalisée (taille fichier par ex.)
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=str(e)
+            detail="Erreur interne : " + str(e)
         )
-
+    
 @router.get("/get/{public_id}",response_model = FileSlim, status_code=200)
 def get_file(
     *,

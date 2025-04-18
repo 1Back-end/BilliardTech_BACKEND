@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informations de connexion à {{ project_name }}</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px;">
+    <div style="max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 8px;">
+        <h2 style="color: #1F4283;">Bonjour {{ name }},</h2>
+
+        <p>Nous avons le plaisir de vous informer que votre compte sur <strong>{{ project_name }}</strong> a été créé avec succès.</p>
+
+        <p>Voici vos informations de connexion :</p>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+            <tr>
+                <td style="padding: 10px; background-color: #f7f7f7;"><strong>Login :</strong></td>
+                <td style="padding: 10px;">{{ login }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; background-color: #f7f7f7;"><strong>Mot de passe :</strong></td>
+                <td style="padding: 10px;">{{ password }}</td>
+            </tr>
+        </table>
+
+        <p>Nous vous recommandons de changer votre mot de passe lors de votre première connexion.</p>
+
+        <p style="margin-top: 30px;">Cordialement,<br>
+        <strong>L’équipe {{ project_name }}</strong></p>
+    </div>
+</body>
+</html>

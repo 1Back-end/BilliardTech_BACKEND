@@ -78,6 +78,11 @@ translation = {
     "type-examen-created-successfully" : "Type d'examen crée avec succès",
     "type-examen-updated-successfully" : "Type d'examen mise à jour avec succès",
     "type-examen-deleted-successfully" : "Type d'examn supprimé avec succès",
-    "user-updated-successfully" : "Utilisateur mise à jour avec succès"
+    "user-updated-successfully" : "Utilisateur mise à jour avec succès",
+    "teacher-created-successfully" : "Professeur crée avec succès",
+    "teacher-not-found" : "Professeur Introuvable",
+    "teacher-deleted-successfully" : "Professeur supprimé avec succès",
+    "teacher-status-updated-successfully" : "Le statut du professeur à été mis à jour avec succès",
+    "teacher-updated-successfully" : "Le professeur mis à jour avec succès"
 
 }

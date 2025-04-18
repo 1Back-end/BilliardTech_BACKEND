@@ -77,6 +77,11 @@ translation = {
     "type-examen-code-already-exist" : "Type examen code is already exist",
     "type-examen-created-successfully" : "Type examen created successfully",
     "type-examen-updated-successfully" : "Type examen updated successfully",
-    "type-examen-deleted-successfully" : "Type examn deleted successfully"
+    "type-examen-deleted-successfully" : "Type examn deleted successfully",
+    "teacher-created-successfully" : "Teacher created successfully",
+    "teacher-not-found" : "Teacher not found",
+    "teacher-deleted-successfully" : "Teacher deleted successfully",
+    "teacher-status-updated-successfully" : "Teacher status updated successfully",
+    "teacher-updated-successfully" : "Teacher updated successfully"
 
 }

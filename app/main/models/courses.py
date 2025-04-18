@@ -12,22 +12,21 @@ from enum import Enum
 class Course(Base):
     __tablename__ = "courses"
 
-    id = Column(String, primary_key=True)
-    title = Column(String, nullable=False)
-    code = Column(String, nullable=False, unique=True)
-    credits = Column(Integer, default=0)
-    type = Column(String)  # CM, TP, TD
+    id = Column(String, primary_key=True, index=True)  # Identifiant unique du cours
+    title = Column(String, nullable=False)  # Titre du cours
+    code = Column(String, nullable=False, unique=True)  # Code unique du cours
+    credits = Column(Integer, default=0)  # Nombre de crédits du cours
+    type = Column(String)  # Type de cours (CM, TD, TP, etc.)
 
-    semester_uuid = Column(String, ForeignKey("semesters.uuid",ondelete="CASCADE",onupdate="CASCADE"))
-    group_uuid = Column(String, ForeignKey("groups.uuid",ondelete="CASCADE",onupdate="CASCADE"))
-    teacher_uuid = Column(String, ForeignKey("teachers.uuid",ondelete="CASCADE",onupdate="CASCADE"))
+    speciality_uuid = Column(String, ForeignKey("specialities.uuid"), nullable=True)  # Relier à la filière
+    speciality = relationship("Speciality", foreign_keys=[speciality_uuid])
 
-    semester = relationship("Semester", foreign_keys=[semester_uuid])
+    
+    group_uuid = Column(String, ForeignKey("groups.uuid",ondelete="CASCADE",onupdate="CASCADE"), nullable=True)
     group = relationship("Group", foreign_keys=[group_uuid])
-    teacher = relationship("Teacher", foreign_keys=[teacher_uuid])
 
-    added_by = Column(String, ForeignKey('users.uuid',ondelete="CASCADE",onupdate="CASCADE"), nullable=False)  # Candidat postulant
-    user = relationship("User", foreign_keys=[added_by])
-    created_at = Column(DateTime, default=func.now())  # Account creation timestamp
-    is_deleted = Column(Boolean, default=False)
-    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())  # Last update timestamp
+    created_at = Column(DateTime, default=func.now())  # Date de création du cours
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())  # Date de dernière mise à jour
+    is_deleted = Column(Boolean, default=False)  # Si le cours est supprimé ou non
+
+    assignments = relationship("TeacherCourseAssignment", back_populates="course")  # Assignations des cours

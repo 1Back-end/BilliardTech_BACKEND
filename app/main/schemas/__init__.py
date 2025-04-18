@@ -12,3 +12,4 @@ from .group import *
 from .students import *
 from .subjects import *
 from .examns_type import *
+from .teacher import *

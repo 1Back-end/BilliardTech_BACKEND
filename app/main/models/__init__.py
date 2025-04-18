@@ -10,3 +10,4 @@ from .group import *
 from .students import *
 from .subjects import *
 from .exams_type import *
+from .professors import *
