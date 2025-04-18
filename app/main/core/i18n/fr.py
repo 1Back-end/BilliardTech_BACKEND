@@ -5,7 +5,7 @@ translation = {
     "reset-password-started": "Réinitialisation du mot de passe commencée",
     "otp-invalid": "Code OTP invalide",
     "password-reset-successfully": "Mot de passe réinitialisé avec succès",
-    "auth-login-failed": "Échec de la connexion",
+    "auth-login-failed": "Email ou mot de passe incorrect",
     "user-not-activated": "Utilisateur non activé",
     "otp-expired": "Code OTP expiré",
     "user-account-activated-successfully": "Compte utilisateur activé avec succès",

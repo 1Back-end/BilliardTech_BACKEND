@@ -105,6 +105,7 @@ class UserProfile(BaseModel):
     first_name:str
     last_name:str
     role:UserRole
+    login:Optional[str]=None
     avatar:Optional[FileSlim2]=None
 
 class ResetPasswordOption2Step1(BaseModel):
