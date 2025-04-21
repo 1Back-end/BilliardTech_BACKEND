@@ -7,6 +7,8 @@ translation = {
     "password-reset-successfully": "Mot de passe réinitialisé avec succès",
     "auth-login-failed": "Email ou mot de passe incorrect",
     "user-not-activated": "Utilisateur non activé",
+    "teacher-not-activated" : "Votre compte est Inactif",
+    "account-not-found"  : "Votre compte est Introuvable",
     "otp-expired": "Code OTP expiré",
     "user-account-activated-successfully": "Compte utilisateur activé avec succès",
     "user-account-deactivated-successfully": "Compte utilisateur désactivé avec succès",
@@ -83,6 +85,17 @@ translation = {
     "teacher-not-found" : "Professeur Introuvable",
     "teacher-deleted-successfully" : "Professeur supprimé avec succès",
     "teacher-status-updated-successfully" : "Le statut du professeur à été mis à jour avec succès",
-    "teacher-updated-successfully" : "Le professeur mis à jour avec succès"
+    "teacher-updated-successfully" : "Le professeur mis à jour avec succès",
+    "course-not-found" : "Cours Introuvable",
+    "course-already-exists" :"Le cours existe déjà",
+    "course-created-successfully" :"Cours créé avec succès",
+    "course-updated-successfully" : "Cours mis à jour avec succès",
+    "course-deleted-successfully" : "Cours supprimé avec succès",
+    "course-already-assigned" :"Ce cours est déjà assigné à un autre professeur",
+    "course-assignment-deleted-successfully": "L'assignation de cours a été supprimée avec succès.",
+    "assignments-not-found": "Aucune assignation trouvée pour ce professeur.",
+    "assignment-not-found": "L'assignation n'a pas été trouvée.",
+    "course-assigned-to-teacher-successfully": "Le cours a été attribué au professeur avec succès.",
+    "courses-updated-successfully": "Les cours ont été mis à jour avec succès."
 
 }

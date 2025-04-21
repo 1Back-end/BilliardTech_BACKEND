@@ -24,6 +24,10 @@ class CRUDTeacher(CRUDBase[models.Teacher,schemas.TeacherBase,schemas.TeacherCre
         return db.query(models.Teacher).filter(models.Teacher.email==email,models.Teacher.is_deleted==False).first()
     
     @classmethod
+    def get_by_login(cls,db:Session,*,login:str):
+        return db.query(models.Teacher).filter(models.Teacher.login==login,models.Teacher.is_deleted==False).first()
+    
+    @classmethod
     def get_by_phone_number(cls,db:Session,*,phone_number:str):
         return db.query(models.Teacher).filter(models.Teacher.phone_number==phone_number,models.Teacher.is_deleted==False).first()
     @classmethod
@@ -124,6 +128,14 @@ class CRUDTeacher(CRUDBase[models.Teacher,schemas.TeacherBase,schemas.TeacherCre
         return db.query(models.Teacher).filter(
             models.Teacher.is_deleted == False
         ).all()
+    @classmethod
+    def authenticate(cls, db: Session, *, login: str, password: str) -> Union[models.Teacher, None]:
+        db_obj: models.Teacher = db.query(models.Teacher).filter(models.Teacher.login == login).first()
+        if not db_obj:
+            return None
+        if not verify_password(password, db_obj.password_hash):
+            return None   
+        return db_obj
     
 
 

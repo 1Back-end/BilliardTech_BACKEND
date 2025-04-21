@@ -125,6 +125,9 @@ def send_reset_password_option2_email(email_to: str, name: str,  otp: str):
         logging.error(f"Erreur envoi email : {e}")
 
 
+
+
+
 def send_notification_to_candidate(email: str, name:str , job_title: str, job_description: str):
     try:
         # Charger et rendre le template HTML

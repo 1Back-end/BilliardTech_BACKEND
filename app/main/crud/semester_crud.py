@@ -20,7 +20,7 @@ class CRUDSemester(CRUDBase[models.Semester,schemas.SemesterCreate,schemas.Semes
     
     @classmethod
     def get_by_year(cls, db: Session,*, academic_year_uuid:str):
-        return db.query(models.Semester).filter(models.Semester.academic_year_uuid == academic_year_uuid, models.Semester.is_deleted==False).all()
+        return db.query(models.Semester).filter(models.Semester.academic_year_uuid == academic_year_uuid, models.Semester.is_deleted==False,models.Semester.status.in_(["ACTIVE"])).all()
     
     @classmethod
     def get_by_uuid(cls,db:Session,*,uuid:str):
@@ -28,7 +28,7 @@ class CRUDSemester(CRUDBase[models.Semester,schemas.SemesterCreate,schemas.Semes
     
     @classmethod
     def get_by_academic_year(cls,db:Session,*,academic_year_uuid:str):
-        return db.query(models.Semester).filter(models.Semester.academic_year_uuid == academic_year_uuid, models.Semester.is_deleted==False).all()
+        return db.query(models.Semester).filter(models.Semester.academic_year_uuid == academic_year_uuid, models.Semester.is_deleted==False,models.Semester.status.in_(["ACTIVE"])).all()
     
 
     @classmethod

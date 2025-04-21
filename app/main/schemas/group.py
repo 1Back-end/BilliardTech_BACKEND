@@ -41,6 +41,12 @@ class GroupSlim(BaseModel):
     name:str
     model_config = ConfigDict(from_attributes=True)
 
+class GroupSlim(BaseModel):
+    uuid:str
+    name:str
+    level:str
+    model_config = ConfigDict(from_attributes=True)
+
 class GroupResponseList(BaseModel):
     total: int
     pages: int

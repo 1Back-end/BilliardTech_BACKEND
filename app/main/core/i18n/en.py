@@ -9,6 +9,8 @@ translation = {
     "password-reset-successfully": "Password reset successfully",
     "auth-login-failed": "Login failed",
     "user-not-activated": "User not activated",
+    "account-not-found" : "Account not found",
+    "teacher-not-activated" : "Teacher not actived",
     "otp-expired": "OTP code expired",
     "user-account-activated-successfully": "User account activated successfully",
     "user-account-deactivated-successfully": "User account deactivated successfully",
@@ -82,6 +84,17 @@ translation = {
     "teacher-not-found" : "Teacher not found",
     "teacher-deleted-successfully" : "Teacher deleted successfully",
     "teacher-status-updated-successfully" : "Teacher status updated successfully",
-    "teacher-updated-successfully" : "Teacher updated successfully"
+    "teacher-updated-successfully" : "Teacher updated successfully",
+    "course-not-found" : "Course not found",
+    "course-already-exists" : "The course already exists",
+    "course-created-successfully" : "Course created successfully",
+    "course-updated-successfully" : "Course updated successfully",
+    "course-deleted-successfully" :"Course deleted successfully",
+    "course-already-assigned" :"This course is already assigned to another teacher.",
+    "course-assignment-deleted-successfully": "Course assignment deleted successfully.",
+    "assignments-not-found": "No assignments found for this teacher.",
+    "assignment-not-found": "Assignment not found.",
+    "course-assigned-to-teacher-successfully": "Course assigned to teacher successfully.",
+    "courses-updated-successfully": "Courses updated successfully."
 
 }

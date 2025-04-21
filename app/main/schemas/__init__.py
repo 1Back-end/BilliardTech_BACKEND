@@ -13,3 +13,5 @@ from .students import *
 from .subjects import *
 from .examns_type import *
 from .teacher import *
+from .courses import *
+from .teacher_course_assignment import *

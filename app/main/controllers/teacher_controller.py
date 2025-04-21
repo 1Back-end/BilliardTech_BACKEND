@@ -117,3 +117,67 @@ def get_user_teachers(
 ):
    teachers = crud.teacher.get_all_teachers(db=db)
    return teachers
+
+@router.get("/teachers-with-courses", response_model=schemas.PaginatedTeachersResponse)
+def get_teachers_with_courses(
+    db: Session = Depends(get_db),
+    page: int = Query(1, ge=1),
+    per_page: int = Query(10, ge=1)
+):
+    offset = (page - 1) * per_page
+
+    # Total teachers with assignments
+    total_teachers = db.query(models.Teacher)\
+        .filter(models.Teacher.is_deleted == False)\
+        .count()
+
+    teachers = db.query(models.Teacher)\
+        .filter(models.Teacher.is_deleted == False)\
+        .offset(offset)\
+        .limit(per_page)\
+        .all()
+
+    teachers_with_courses = []
+
+    for teacher in teachers:
+        assignments = db.query(models.TeacherCourseAssignment).join(models.Course).filter(
+            models.TeacherCourseAssignment.teacher_uuid == teacher.uuid,
+            models.TeacherCourseAssignment.is_deleted == False
+        ).all()
+
+        if not assignments:
+            continue
+
+        courses_with_added_by = []
+        for assignment in assignments:
+            course = db.query(models.Course).filter(models.Course.uuid == assignment.course_uuid).first()
+            user_added_by = db.query(models.User).filter(models.User.uuid == assignment.added_by).first()
+
+            courses_with_added_by.append(schemas.CoursesSlim2(
+                title=course.title,
+                code=course.code,
+                user=schemas.AddedBySlim(
+                    first_name=user_added_by.first_name if user_added_by else "Inconnu",
+                    last_name=user_added_by.last_name if user_added_by else "Inconnu",
+                    role=user_added_by.role if user_added_by else "Inconnu"
+                ),
+                created_at=assignment.created_at,
+                updated_at=assignment.updated_at
+            ))
+
+        teacher_data = schemas.TeacherResponse(
+            name=f"{teacher.first_name} {teacher.last_name}",
+            created_at=teacher.created_at,
+            courses=courses_with_added_by
+        )
+        teachers_with_courses.append(teacher_data)
+
+    total_pages = (total_teachers + per_page - 1) // per_page  # Calcul du nombre total de pages
+
+    return schemas.PaginatedTeachersResponse(
+        total=total_teachers,
+        pages=total_pages,
+        per_page=per_page,
+        current_page=page,
+        data=teachers_with_courses
+    )

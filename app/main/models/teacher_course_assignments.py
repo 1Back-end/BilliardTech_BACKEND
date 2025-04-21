@@ -12,12 +12,18 @@ from enum import Enum
 class TeacherCourseAssignment(Base):
     __tablename__ = "teacher_course_assignments"
 
-    id = Column(String, primary_key=True, index=True)  # Identifiant unique de l'assignation
+    uuid = Column(String, primary_key=True, index=True)  # Identifiant unique de l'assignation
     teacher_uuid = Column(String, ForeignKey("teachers.uuid", ondelete="CASCADE", onupdate="CASCADE"))  # UUID du professeur
-    course_id = Column(String, ForeignKey("courses.id", ondelete="CASCADE", onupdate="CASCADE"))  # ID du cours
+    course_uuid = Column(String, ForeignKey("courses.uuid", ondelete="CASCADE", onupdate="CASCADE"))  # ID du cours
 
-    teacher = relationship("Teacher", back_populates="course_assignments")  # Relation vers le professeur
-    course = relationship("Course", back_populates="assignments")  # Relation vers le cours
+    teacher = relationship("Teacher", foreign_keys=[teacher_uuid])  # Relation vers le professeur
+    courses = relationship("Course", foreign_keys=[course_uuid])  # Relation vers le cours
+
+    added_by = Column(String, ForeignKey('users.uuid',ondelete="CASCADE",onupdate="CASCADE"), nullable=False)
+    user = relationship("User", foreign_keys=[added_by])
+
+    is_deleted = Column(Boolean, default=False)
+
 
     created_at = Column(DateTime, default=func.now())  # Date d'assignation
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())  # Date de dernière mise à jour

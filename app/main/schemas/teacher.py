@@ -1,8 +1,10 @@
 from datetime import date, datetime
 from pydantic import BaseModel,EmailStr,ConfigDict
-from typing import Optional
+from typing import List, Optional
+from app.main.models.courses import Course
+from app.main.schemas.courses import CoursesSlim2
 from app.main.schemas.file import FileSlim2
-from app.main.schemas.user import AddedBy
+from app.main.schemas.user import AddedBy, Token
 
 
 class TeacherBase(BaseModel):
@@ -65,6 +67,23 @@ class Teacher(BaseModel):
     updated_at: datetime
     model_config = ConfigDict(from_attributes=True)
 
+class TeacherSlim(BaseModel):
+    uuid:str
+    matricule:str
+    first_name:str
+    last_name : str
+    address : str
+    phone_number:str
+    phone_number_2:Optional[str]=None
+    email : EmailStr
+    grade:str
+    login:str
+    status : str
+    avatar:Optional[FileSlim2]=None
+    created_at: datetime
+    updated_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
 class TeacherResponseList(BaseModel):
     total: int
     pages: int
@@ -73,3 +92,29 @@ class TeacherResponseList(BaseModel):
     data: list[Teacher]
 
     model_config = ConfigDict(from_attributes=True)
+
+class TeacherResponse(BaseModel):
+    name: str
+    courses: List[CoursesSlim2]
+    model_config = ConfigDict(from_attributes=True)
+
+class PaginatedTeachersResponse(BaseModel):
+    total: int
+    pages: int
+    per_page: int
+    current_page: int
+    data: List[TeacherResponse]
+
+class TeacherAuthentication(BaseModel):
+    teacher: TeacherSlim
+    token: Optional[Token] = None
+    model_config = ConfigDict(from_attributes=True)
+
+class TeacherLogin(BaseModel):
+    login: str
+    password: str
+
+class TeacherChangePassword(BaseModel):
+    login:str
+    current_password:str
+    new_password: str

@@ -11,3 +11,5 @@ from .students import *
 from .subjects import *
 from .exams_type import *
 from .professors import *
+from .courses import *
+from .teacher_course_assignments import *
