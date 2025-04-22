@@ -31,7 +31,7 @@ class CoursesSlim2(BaseModel):
     user:AddedBySlim
     created_at: datetime
     updated_at: Optional[datetime]
-    # groups: List[GroupSlim]  # <-- Ajouté
+    group: Optional[GroupSlim]  # Si le groupe peut être nul
     model_config = ConfigDict(from_attributes=True)  
 
 
@@ -68,6 +68,20 @@ class Course(BaseModel):
     speciality:SpecialitySlim
     group:GroupSlim
     user:AddedBy
+    created_at:datetime
+    updated_at:datetime
+    academic_year:AcademicYearSlim
+    semester:Optional[SemesterSlim1]=None
+    model_config = ConfigDict(from_attributes=True)
+
+class CourseSlim1(BaseModel):
+    uuid:str
+    title:str
+    code:str
+    credits:int
+    type:str
+    speciality:SpecialitySlim
+    group:GroupSlim
     created_at:datetime
     updated_at:datetime
     academic_year:AcademicYearSlim

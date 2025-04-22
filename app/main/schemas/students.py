@@ -70,8 +70,30 @@ class Student(BaseModel):
     created_at:datetime
     updated_at:datetime
     model_config = ConfigDict(from_attributes=True)
-    
 
+class StudentSlim2(BaseModel):
+    uuid:str
+    matricule:str
+    first_name: str
+    last_name: str
+    email: EmailStr
+    phone_number:str
+    birthdate: date
+    address:str
+    gender : str
+    nationality:str
+    group:GroupSlim
+    created_at:datetime
+    updated_at:datetime
+    model_config = ConfigDict(from_attributes=True)
+    
+class StudentSlim(BaseModel):
+    uuid:str
+    matricule:str
+    first_name: str
+    last_name: str
+    email: EmailStr
+    model_config = ConfigDict(from_attributes=True)
 class StudentResponseList(BaseModel):
     total: int
     pages: int

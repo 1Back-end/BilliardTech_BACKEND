@@ -45,6 +45,10 @@ class AcademicYearSlim(BaseModel):
     status:str
     model_config = ConfigDict(from_attributes=True)
 
+class AcademicYearSlim1(BaseModel):
+    uuid:str
+    name : str
+    model_config = ConfigDict(from_attributes=True)
 class AcademicYearResponseList(BaseModel):
     total: int
     pages: int

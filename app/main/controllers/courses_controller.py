@@ -116,3 +116,4 @@ def get_courses(
 ):
    courses = crud.course.get_all_courses(db=db)
    return courses
+

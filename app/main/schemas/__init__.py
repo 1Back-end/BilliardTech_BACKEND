@@ -15,3 +15,4 @@ from .examns_type import *
 from .teacher import *
 from .courses import *
 from .teacher_course_assignment import *
+from .student_exam_notes import *

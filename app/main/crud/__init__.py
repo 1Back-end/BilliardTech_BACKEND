@@ -13,3 +13,4 @@ from .examns_type_crud import *
 from .teacher_crud import *
 from .courses_crud import *
 from .teacher_course_assignment_crud import *
+from .student_exam_notes import *

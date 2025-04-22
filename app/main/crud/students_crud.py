@@ -16,6 +16,13 @@ from app.main.core.security import generate_matricule
 
 class CRUDStudents(CRUDBase[models.Student,schemas.StudentCreate,schemas.StudentUpdate]):
 
+    @staticmethod
+    def get_by_uuids(db: Session, uuids: List[str]):
+        return db.query(models.Student).filter(
+            models.Student.uuid.in_(uuids),  # Utilisation de 'in' pour filtrer plusieurs UUIDs
+            models.Student.is_deleted == False
+        ).all()
+
     @classmethod
     def get_by_email(cls,db:Session,*,email:str):
         return db.query(models.Student).filter(models.Student.email==email,models.Student.is_deleted==False).first()

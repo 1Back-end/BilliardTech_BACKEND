@@ -34,7 +34,7 @@ def create_course_assignment(
 @router.put("/update-teacher-courses", response_model=schemas.Msg)
 def update_teacher_courses(
     *,
-    obj_in: schemas.TeacherCourseAssignmentCreate,
+    obj_in: schemas.TeacherCourseAssignmentUpdate,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN", "ADMIN"]))
 ):
@@ -56,6 +56,7 @@ def get_teacher_assignments(
     current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN", "ADMIN"]))
 ):
     assignments = crud.assignments.get_by_teacher(db=db, teacher_uuid=teacher_uuid)
+    print(assignments)
     if not assignments:
         raise HTTPException(status_code=404, detail=__("assignments-not-found"))
     return assignments

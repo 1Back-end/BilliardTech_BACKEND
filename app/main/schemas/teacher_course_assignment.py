@@ -21,8 +21,7 @@ class TeacherCourseAssignmentSlim(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 class TeacherCourseAssignmentUpdate(BaseModel):
-    uuid:str
-    teacher_uuid: Optional[str]=None
+    teacher_uuid:str
     course_uuids: Optional[List[str]]=None
 
 class TeacherCourseAssignment(BaseModel):

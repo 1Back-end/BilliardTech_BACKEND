@@ -13,3 +13,4 @@ from .exams_type import *
 from .professors import *
 from .courses import *
 from .teacher_course_assignments import *
+from .student_exam_notes import *

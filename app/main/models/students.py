@@ -19,7 +19,7 @@ class Student(Base):
     __tablename__ = "students"
 
     uuid = Column(String, primary_key=True, index=True)
-    matricule = Column(String, primary_key=True, index=True)
+    matricule = Column(String,nullable=False)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)

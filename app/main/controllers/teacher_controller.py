@@ -2,7 +2,7 @@ from datetime import timedelta, datetime
 from typing import Any, List
 from fastapi import APIRouter, Depends, Body, HTTPException, Query
 from sqlalchemy.orm import Session
-from app.main.core.dependencies import get_db, TokenRequired
+from app.main.core.dependencies import TeacherTokenRequired, get_db, TokenRequired
 from app.main import schemas, crud, models
 from app.main.core.i18n import __
 from app.main.core.security import create_access_token, get_password_hash
@@ -152,6 +152,13 @@ def get_teachers_with_courses(
         for assignment in assignments:
             course = db.query(models.Course).filter(models.Course.uuid == assignment.course_uuid).first()
             user_added_by = db.query(models.User).filter(models.User.uuid == assignment.added_by).first()
+            group = db.query(models.Group).filter(models.Group.uuid == course.group_uuid).first()
+
+            group_data = schemas.GroupSlim(
+                uuid=group.uuid if group else "Inconnu",
+                name=group.name if group else "Inconnu",
+                level=group.level if group else "Inconnu"
+            ) if group else None
 
             courses_with_added_by.append(schemas.CoursesSlim2(
                 title=course.title,
@@ -162,10 +169,13 @@ def get_teachers_with_courses(
                     role=user_added_by.role if user_added_by else "Inconnu"
                 ),
                 created_at=assignment.created_at,
-                updated_at=assignment.updated_at
+                updated_at=assignment.updated_at,
+                group=group_data  # Ajout du groupe ici
             ))
 
+
         teacher_data = schemas.TeacherResponse(
+            uuid = teacher.uuid,
             name=f"{teacher.first_name} {teacher.last_name}",
             created_at=teacher.created_at,
             courses=courses_with_added_by
@@ -181,3 +191,45 @@ def get_teachers_with_courses(
         current_page=page,
         data=teachers_with_courses
     )
+
+@router.get("/courses/by-semester/{semester_uuid}", response_model=List[schemas.CourseSlim1])
+def get_teacher_courses_by_semester(
+    semester_uuid: str,
+    db: Session = Depends(get_db),
+    current_user: models.Teacher = Depends(TeacherTokenRequired())
+):
+    courses = db.query(models.Course).join(models.TeacherCourseAssignment).filter(
+        models.TeacherCourseAssignment.teacher_uuid == current_user.uuid,
+        models.TeacherCourseAssignment.is_deleted == False,
+        models.Course.semester_uuid == semester_uuid,
+        models.Course.is_deleted == False
+    ).all()
+
+    if not courses:
+        raise HTTPException(status_code=404, detail="Aucun cours trouvé pour ce semestre.")
+
+    return courses
+
+@router.get("/students/by-class/{group_uuid}", response_model=List[schemas.StudentSlim2])
+def get_students_by_class_for_teacher(
+    group_uuid: str,
+    db: Session = Depends(get_db),
+    current_user: models.Teacher = Depends(TeacherTokenRequired())
+):
+    # Optionnel : vérifier si le professeur a un cours dans cette classe
+    has_course_in_class = db.query(models.TeacherCourseAssignment).join(models.Course).filter(
+        models.TeacherCourseAssignment.teacher_uuid == current_user.uuid,
+        models.TeacherCourseAssignment.is_deleted == False,
+        models.Course.group_uuid == group_uuid,
+        models.Course.is_deleted == False
+    ).first()
+
+    if not has_course_in_class:
+        raise HTTPException(status_code=403, detail="Vous n’avez aucun cours dans cette classe.")
+
+    students = db.query(models.Student).filter(
+        models.Student.group_uuid == group_uuid,
+        models.Student.is_deleted == False
+    ).all()
+
+    return students

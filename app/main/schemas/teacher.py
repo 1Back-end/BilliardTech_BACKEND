@@ -6,6 +6,10 @@ from app.main.schemas.courses import CoursesSlim2
 from app.main.schemas.file import FileSlim2
 from app.main.schemas.user import AddedBy, Token
 
+class TeacherSlim1(BaseModel):
+    first_name:str
+    last_name : str
+    model_config = ConfigDict(from_attributes=True)
 
 class TeacherBase(BaseModel):
     first_name:str
@@ -94,6 +98,7 @@ class TeacherResponseList(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 class TeacherResponse(BaseModel):
+    uuid:str
     name: str
     courses: List[CoursesSlim2]
     model_config = ConfigDict(from_attributes=True)
