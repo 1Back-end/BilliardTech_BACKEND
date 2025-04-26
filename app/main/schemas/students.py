@@ -1,11 +1,12 @@
 from datetime import date, datetime
 from pydantic import BaseModel,EmailStr,ConfigDict
-from typing import Optional
+from typing import List, Optional
 from app.main.schemas.academic_year import AcademicYearSlim
 from app.main.schemas.group import GroupSlim
 from app.main.schemas.file import FileSlim2
 from app.main.schemas.programs import ProgramsSlim2
 from app.main.schemas.speciality import SpecialitySlim
+# from app.main.schemas.student_exam_notes import StudentExamNoteOutSlim1
 from app.main.schemas.user import AddedBy
 
 class StudentBase(BaseModel):
@@ -86,13 +87,41 @@ class StudentSlim2(BaseModel):
     created_at:datetime
     updated_at:datetime
     model_config = ConfigDict(from_attributes=True)
+
+
+class StudentOut(BaseModel):
+    uuid:str
+    matricule:str
+    first_name: str
+    last_name: str
+    model_config = ConfigDict(from_attributes=True)
     
 class StudentSlim(BaseModel):
     uuid:str
     matricule:str
     first_name: str
     last_name: str
+    birthdate: date
+    address:str
+    program:Optional[ProgramsSlim2]=None
+    speciality : Optional[SpecialitySlim]=None
+    group:Optional[GroupSlim]=None
     email: EmailStr
+    model_config = ConfigDict(from_attributes=True)
+
+class StudentSlimData(BaseModel):
+    uuid:str
+    matricule:str
+    first_name: str
+    last_name: str
+    birthdate: date
+    address:str
+    email: EmailStr
+    avatar:Optional[FileSlim2]=None
+    program:Optional[ProgramsSlim2]=None
+    speciality : Optional[SpecialitySlim]=None
+    group:Optional[GroupSlim]=None
+   
     model_config = ConfigDict(from_attributes=True)
 class StudentResponseList(BaseModel):
     total: int
@@ -102,3 +131,4 @@ class StudentResponseList(BaseModel):
     data: list[Student]
 
     model_config = ConfigDict(from_attributes=True)
+

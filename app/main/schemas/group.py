@@ -55,3 +55,9 @@ class GroupResponseList(BaseModel):
     data: list[GroupResponse]
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class GroupOut(BaseModel):
+    uuid: str
+    name: str
+    model_config = ConfigDict(from_attributes=True)

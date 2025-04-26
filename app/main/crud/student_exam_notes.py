@@ -24,17 +24,32 @@ class CRUDExamnNotes(CRUDBase[schemas.StudentNoteInput,schemas.StudentExamNoteCr
         credits = course.credits or 1
         updated_or_created = []
 
+        student_uuids = [note.student_uuid for note in obj_in.notes]
+        student_map = {s.uuid: s for s in crud.students.get_by_uuids(db=db, uuids=student_uuids)}
+
         for note_data in obj_in.notes:
             note = db.query(models.StudentExamNote).filter_by(
                 student_uuid=note_data.student_uuid,
                 course_uuid=obj_in.course_uuid,
                 semester_uuid=obj_in.semester_uuid,
-                academic_year_uuid=obj_in.academic_year_uuid,
                 is_deleted=False
             ).first()
 
-            # Si note existe, on met à jour uniquement les champs fournis
+            student = student_map.get(note_data.student_uuid)
+
             if note:
+                if note_data.note_cc is not None and note.note_cc is not None:
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"Les notes de CC existent déjà pour {student.first_name} {student.last_name}"
+                    )
+
+                if note_data.note_sn is not None and note.note_sn is not None:
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"Les notes de SN existent déjà pour {student.first_name} {student.last_name}"
+                    )
+
                 if note_data.note_cc is not None:
                     note.note_cc = note_data.note_cc
                 if note_data.note_sn is not None:
@@ -60,7 +75,6 @@ class CRUDExamnNotes(CRUDBase[schemas.StudentNoteInput,schemas.StudentExamNoteCr
                     added_by=added_by,
                     course_uuid=obj_in.course_uuid,
                     semester_uuid=obj_in.semester_uuid,
-                    academic_year_uuid=obj_in.academic_year_uuid,
                     note_cc=note_data.note_cc,
                     note_sn=note_data.note_sn,
                     final_note=final_note,
@@ -77,31 +91,53 @@ class CRUDExamnNotes(CRUDBase[schemas.StudentNoteInput,schemas.StudentExamNoteCr
         return updated_or_created
 
 
-        return created_notes
+
     @staticmethod
     def calcul_note_finale_et_statut(note_cc: float = None, note_sn: float = None, credits: float = 1):
-        cc = note_cc if note_cc is not None else 0
-        sn = note_sn if note_sn is not None else 0
-        total = 0
-        coef = 0
+        # Si l'une des deux notes est manquante, retourner "En attente"
+        if note_cc is None or note_sn is None:
+            return None, models.StudentExamStatus.EN_ATTENTE
 
-        if note_cc is not None:
-            total += cc * 0.3 * credits
-            coef += 0.3 * credits
-        if note_sn is not None:
-            total += sn * 0.7 * credits
-            coef += 0.7 * credits
+        # Calcul de la note finale lorsque les deux notes sont présentes
+        total = (note_cc * 0.3 + note_sn * 0.7) * credits
+        final_note = round(total / credits, 2)
 
-        final_note = round(total / coef, 2) if coef > 0 else None
-
-        if final_note is None:
-            status = models.StudentExamStatus.EN_ATTENTE
-        elif final_note >= 10:
+        # Déterminer le statut en fonction de la note finale
+        if final_note >= 10:
             status = models.StudentExamStatus.VALIDE
         else:
             status = models.StudentExamStatus.RATTRAPAGE
 
         return final_note, status
+    
+    @classmethod
+    def get_many(
+        cls,
+        db: Session,
+        page: int = 1,
+        per_page: int = 25,
+        group_uuid: Optional[str] = None,
+    ):
+        # Jointure avec Student pour filtrer par group_uuid
+        record_query = db.query(models.StudentExamNote).join(models.Student).filter(
+            models.StudentExamNote.is_deleted == False
+        )
+
+        if group_uuid:
+            record_query = record_query.filter(models.Student.group_uuid == group_uuid)
+
+        total = record_query.count()
+        record_query = record_query.offset((page - 1) * per_page).limit(per_page).all()
+
+        return schemas.PaginatedStudentExamNResponse(
+            total=total,
+            pages=math.ceil(total / per_page),
+            per_page=per_page,
+            current_page=page,
+            data=record_query
+        )
+    
+
 
 
 

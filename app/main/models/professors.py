@@ -47,14 +47,6 @@ class Teacher(Base):
     # Authentification et sécurité
     login = Column(String, nullable=True)  # Identifiant de connexion
     password_hash = Column(String, nullable=False)  # Mot de passe haché
-    is_new_user = Column(Boolean, default=True)
-    first_login_date = Column(DateTime, nullable=True, default=None)
-    last_login_date = Column(DateTime, nullable=True, default=None)
-    connexion_counter = Column(Integer, nullable=True, default=0)
-    otp = Column(String(5), nullable=True, default="")  # Temporary OTP code
-    otp_expired_at = Column(DateTime, nullable=True, default=None)  # OTP expiration date
-    otp_password = Column(String(5), nullable=True, default="")  # OTP password
-    otp_password_expired_at = Column(DateTime, nullable=True, default=None)  # OTP password expiration date
 
     # Métadonnées
     created_at = Column(DateTime, default=func.now())

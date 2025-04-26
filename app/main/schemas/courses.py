@@ -22,8 +22,18 @@ class CourseBase(BaseModel):
 class CoursesSlim1(BaseModel):
     uuid:str
     title:str
+    credits:int
+    code:str
+    academic_year:AcademicYearSlim
+    model_config = ConfigDict(from_attributes=True)  
+
+
+class CoursesSlim3(BaseModel):
+    uuid:str
+    title:str
     code:str
     model_config = ConfigDict(from_attributes=True)  
+
 
 class CoursesSlim2(BaseModel):
     title:str
@@ -86,6 +96,24 @@ class CourseSlim1(BaseModel):
     updated_at:datetime
     academic_year:AcademicYearSlim
     semester:Optional[SemesterSlim1]=None
+    model_config = ConfigDict(from_attributes=True)
+
+
+class CourseSlim3(BaseModel):
+    uuid:str
+    title:str
+    code:str
+    model_config = ConfigDict(from_attributes=True)
+
+
+class CourseSlim2(BaseModel):
+    uuid:str
+    title:str
+    code:str
+    credits:int
+    type:str
+    created_at:datetime
+    updated_at:datetime
     model_config = ConfigDict(from_attributes=True)
 
 class CourseResponseList(BaseModel):

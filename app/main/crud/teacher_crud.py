@@ -35,34 +35,59 @@ class CRUDTeacher(CRUDBase[models.Teacher,schemas.TeacherBase,schemas.TeacherCre
         return db.query(models.Teacher).filter(models.Teacher.phone_number_2==phone_number_2,models.Teacher.is_deleted==False).first()
     
     @classmethod
-    def create(cls,db:Session,*,obj_in:schemas.TeacherCreate,added_by:str):
+    def create(cls, db: Session, *, obj_in: schemas.TeacherCreate, added_by: str):
+        # 1. Génération du mot de passe et matricule
         password: str = generate_password(8, 8)
         print(f"User password: {password}")
         matricule = generate_matricule()
         print(f"Matricule created", matricule)
 
-        db_obj = models.Teacher(
+        # 2. Création du professeur
+        db_teacher = models.Teacher(
             uuid=str(uuid.uuid4()),
-            matricule = matricule,
-            first_name = obj_in.first_name,
-            last_name = obj_in.last_name,
-            address = obj_in.address,
-            phone_number = obj_in.phone_number,
-            phone_number_2 = obj_in.phone_number_2,
-            email = obj_in.email,
-            grade = obj_in.grade,
-            avatar_uuid = obj_in.avatar_uuid,
-            added_by = added_by,
-            login = obj_in.login,
+            matricule=matricule,
+            first_name=obj_in.first_name,
+            last_name=obj_in.last_name,
+            address=obj_in.address,
+            phone_number=obj_in.phone_number,
+            phone_number_2=obj_in.phone_number_2,
+            email=obj_in.email,
+            grade=obj_in.grade,
+            avatar_uuid=obj_in.avatar_uuid,
+            added_by=added_by,
+            login=obj_in.login,
             password_hash=get_password_hash(password),
-
         )
-        db.add(db_obj)
+        db.add(db_teacher)
         db.commit()
-        db.refresh(db_obj)
-        send_teacher_account_creation_email(email_to=obj_in.email,name=f"{obj_in.first_name} {obj_in.last_name}",login=obj_in.login,password=password)
-        return db_obj
-    
+        db.refresh(db_teacher)
+
+        # 3. Création de l'utilisateur lié
+        db_user = models.User(
+            uuid=str(uuid.uuid4()),
+            first_name=obj_in.first_name,
+            last_name=obj_in.last_name,
+            email=obj_in.email,
+            phone_number=obj_in.phone_number,
+            login=obj_in.login,
+            password_hash=get_password_hash(password),
+            role=models.UserRole.PROFESSEUR,  # par ex: 'teacher'
+            avatar_uuid=obj_in.avatar_uuid,
+        )
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+
+        # 4. Envoi du mail de création
+        send_teacher_account_creation_email(
+            email_to=obj_in.email,
+            name=f"{obj_in.first_name} {obj_in.last_name}",
+            login=obj_in.login,
+            password=password
+        )
+
+        return db_teacher
+
 
     @classmethod
     def update(cls,db:Session,obj_in:schemas.TeacherUpdate,added_by:str):

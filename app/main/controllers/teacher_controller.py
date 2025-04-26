@@ -11,33 +11,36 @@ from app.main.core.dependencies import TokenRequired
 
 router = APIRouter(prefix="/teachers", tags=["teachers"])
 
-@router.post("/create",response_model=schemas.Msg)
+@router.post("/create", response_model=schemas.Msg)
 def create_teacher(
     *,
     db: Session = Depends(get_db),
-    obj_in:schemas.TeacherCreate,
+    obj_in: schemas.TeacherCreate,
     current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN"]))
 ):
+    # Vérification avatar
     if obj_in.avatar_uuid:
-        avatar = crud.storage_crud.get_file_by_uuid(db=db,file_uuid=obj_in.avatar_uuid)
+        avatar = crud.storage_crud.get_file_by_uuid(db=db, file_uuid=obj_in.avatar_uuid)
         if not avatar:
             raise HTTPException(status_code=404, detail=__(key="avatar-not-found"))
-    
-    exist_phone = crud.teacher.get_by_phone_number(db=db, phone_number=obj_in.phone_number)
-    if exist_phone:
-        raise HTTPException(status_code=409, detail=__(key="phone_number-already-used"))
-    
-    # exist_phone_2 = crud.teacher.get_by_phone_number_2(db=db,phone_number_2=obj_in.phone_number_2)
-    # if exist_phone_2:
-    #     raise HTTPException(status_code=409, detail=__(key="phone_number-already-used"))
 
-    exist_email = crud.teacher.get_by_email(db=db, email=obj_in.email)
-    if exist_email:
+    # full_phone_number = f"{obj_in.country_code}{obj_in.phone_number}"
+
+    # Vérification dans la table Teacher
+    if crud.teacher.get_by_phone_number(db=db, phone_number=obj_in.phone_number):
+        raise HTTPException(status_code=409, detail=__(key="phone_number-already-used"))
+
+    if crud.teacher.get_by_email(db=db, email=obj_in.email):
         raise HTTPException(status_code=409, detail=__(key="email-already-used"))
-    
+
+    if crud.user.get_by_email(db=db, email=obj_in.email):
+        raise HTTPException(status_code=409, detail=__(key="email-already-used"))
+
+    # Création du professeur
     crud.teacher.create(
-        db, obj_in=obj_in,added_by=current_user.uuid
+        db, obj_in=obj_in, added_by=current_user.uuid
     )
+
     return schemas.Msg(message=__(key="teacher-created-successfully"))
 
 
@@ -191,45 +194,34 @@ def get_teachers_with_courses(
         current_page=page,
         data=teachers_with_courses
     )
-
-@router.get("/courses/by-semester/{semester_uuid}", response_model=List[schemas.CourseSlim1])
-def get_teacher_courses_by_semester(
-    semester_uuid: str,
+@router.get("/teacher/classes", response_model=list[schemas.GroupOut])
+def get_teacher_classes(
     db: Session = Depends(get_db),
-    current_user: models.Teacher = Depends(TeacherTokenRequired())
+    current_user: models.User = Depends(TokenRequired(roles=["PROFESSEUR"]))
 ):
-    courses = db.query(models.Course).join(models.TeacherCourseAssignment).filter(
-        models.TeacherCourseAssignment.teacher_uuid == current_user.uuid,
-        models.TeacherCourseAssignment.is_deleted == False,
-        models.Course.semester_uuid == semester_uuid,
-        models.Course.is_deleted == False
-    ).all()
+    assignments = (
+        db.query(models.TeacherCourseAssignment)
+        .join(models.Course)
+        .filter(models.TeacherCourseAssignment.teacher_uuid == current_user.uuid)
+        .all()
+    )
 
-    if not courses:
-        raise HTTPException(status_code=404, detail="Aucun cours trouvé pour ce semestre.")
+    # Extraire les groupes sans doublons
+    groups = {assignment.courses.group for assignment in assignments if assignment.courses.group is not None}
 
+    return list(groups)
+
+@router.get("/teacher/courses", response_model=list[schemas.CoursesSlim])
+def get_teacher_courses(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(TokenRequired(roles=["PROFESSEUR"]))
+):
+    assignments = (
+        db.query(models.TeacherCourseAssignment)
+        .join(models.Course, models.TeacherCourseAssignment.courses)
+        .filter(models.TeacherCourseAssignment.teacher_uuid == current_user.uuid)
+        .all()
+    )
+
+    courses = [assignment.courses for assignment in assignments]
     return courses
-
-@router.get("/students/by-class/{group_uuid}", response_model=List[schemas.StudentSlim2])
-def get_students_by_class_for_teacher(
-    group_uuid: str,
-    db: Session = Depends(get_db),
-    current_user: models.Teacher = Depends(TeacherTokenRequired())
-):
-    # Optionnel : vérifier si le professeur a un cours dans cette classe
-    has_course_in_class = db.query(models.TeacherCourseAssignment).join(models.Course).filter(
-        models.TeacherCourseAssignment.teacher_uuid == current_user.uuid,
-        models.TeacherCourseAssignment.is_deleted == False,
-        models.Course.group_uuid == group_uuid,
-        models.Course.is_deleted == False
-    ).first()
-
-    if not has_course_in_class:
-        raise HTTPException(status_code=403, detail="Vous n’avez aucun cours dans cette classe.")
-
-    students = db.query(models.Student).filter(
-        models.Student.group_uuid == group_uuid,
-        models.Student.is_deleted == False
-    ).all()
-
-    return students

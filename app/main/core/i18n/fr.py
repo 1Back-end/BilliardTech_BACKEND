@@ -96,6 +96,17 @@ translation = {
     "assignments-not-found": "Aucune assignation trouvée pour ce professeur.",
     "assignment-not-found": "L'assignation n'a pas été trouvée.",
     "course-assigned-to-teacher-successfully": "Le cours a été attribué au professeur avec succès.",
-    "courses-updated-successfully": "Les cours ont été mis à jour avec succès."
+    "courses-updated-successfully": "Les cours ont été mis à jour avec succès.",
+    "note-cc-exists": "L'étudiant {first_name} {last_name} a déjà une note de contrôle continu.",
+    "note-sn-exists": "L'étudiant {first_name} {last_name} a déjà une note de session normale.",
+    "course-not-found": "Cours introuvable.",
+    "semester-not-found": "Semestre introuvable.",
+    "students-not-found": "Un ou plusieurs étudiants sont introuvables.",
+    "notes-success": "Les notes ont été enregistrées avec succès.",
+    "students-not-found": "Aucun étudiant trouvé",
+    "subject-grades-available": "Résultats disponibles",
+    "message-grades-available": "Les résultats sont désormais disponibles. Veuillez consulter les résultats sur votre espace étudiant en entrant votre matricule.",
+    "notification-sent": "Les notifications ont été envoyées avec succès.",
+    "type-course-not-found" : "Type cours introuvable"
 
 }

@@ -71,7 +71,7 @@ def get_all_semester(
 def get_all_semester(
     *,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN"]))
+    current_user: models.User = Depends(TokenRequired(roles=["SUPER_ADMIN","ADMIN","PROFESSEUR"]))
 ):
     return crud.semester.get_all(db=db)
 

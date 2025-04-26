@@ -19,8 +19,9 @@ class StudentExamNote(Base):
     student_uuid = Column(String, ForeignKey("students.uuid", ondelete="CASCADE"), nullable=False)
     student = relationship("Student", backref="exam_notes")
 
-    added_by = Column(String, ForeignKey("teachers.uuid", ondelete="CASCADE", onupdate="CASCADE"), nullable=False)
-    teacher = relationship("Teacher", foreign_keys=[added_by])
+    added_by = Column(String, ForeignKey('users.uuid',ondelete="CASCADE",onupdate="CASCADE"), nullable=True)  
+    user = relationship("User", foreign_keys=[added_by])
+
 
     course_uuid = Column(String, ForeignKey("courses.uuid", ondelete="CASCADE", onupdate="CASCADE"), nullable=False)
     course = relationship("Course", foreign_keys=[course_uuid])
@@ -28,9 +29,7 @@ class StudentExamNote(Base):
     semester_uuid = Column(String, ForeignKey("semesters.uuid", ondelete="CASCADE", onupdate="CASCADE"), nullable=False)
     semester = relationship("Semester", foreign_keys=[semester_uuid])
 
-    academic_year_uuid = Column(String, ForeignKey("academic_years.uuid", ondelete="CASCADE", onupdate="CASCADE"), nullable=False)
-    academic_year = relationship("AcademicYear", foreign_keys=[academic_year_uuid])
-
+    
     note_cc = Column(Float, nullable=True)
     note_sn = Column(Float, nullable=True)
     final_note = Column(Float, nullable=True)

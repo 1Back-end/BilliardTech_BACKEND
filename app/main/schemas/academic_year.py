@@ -41,6 +41,8 @@ class AcademicYearResponse(BaseModel):
     
 class AcademicYearSlim(BaseModel):
     uuid:str
+    start_date : date
+    end_date : date
     name : str
     status:str
     model_config = ConfigDict(from_attributes=True)

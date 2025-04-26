@@ -95,6 +95,17 @@ translation = {
     "assignments-not-found": "No assignments found for this teacher.",
     "assignment-not-found": "Assignment not found.",
     "course-assigned-to-teacher-successfully": "Course assigned to teacher successfully.",
-    "courses-updated-successfully": "Courses updated successfully."
+    "courses-updated-successfully": "Courses updated successfully.",
+    "note-cc-exists": "Student {first_name} {last_name} already has a continuous assessment grade.",
+    "note-sn-exists": "Student {first_name} {last_name} already has a normal session grade.",
+    "course-not-found": "The requested course could not be found.",
+    "semester-not-found": "The requested semester could not be found.",
+    "students-not-found": "One or more students could not be found.",
+    "notes-success": "Grades were successfully saved.",
+    "students-not-found": "No students found",
+    "subject-grades-available": "Grades Available",
+    "message-grades-available": "The results are now available. Please check the results in your student portal by entering your matriculation number.",
+    "notification-sent": "Notifications sent successfully.",
+    "type-course-not-found" : "Type course not found"
 
 }

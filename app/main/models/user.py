@@ -19,6 +19,7 @@ class UserRole(str, Enum):
     ADMIN = "ADMIN"
     EDIMESTRE = "EDIMESTRE"
     SUPER_ADMIN = "SUPER_ADMIN"
+    PROFESSEUR = "PROFESSEUR"
 
 
 class UserStatus(str, Enum):
@@ -33,6 +34,7 @@ class UserStatus(str, Enum):
     ACTIVED = "ACTIVED"
     UNACTIVED = "UNACTIVED"
     BLOCKED = "BLOCKED"
+
 
 
 class User(Base):
@@ -62,9 +64,7 @@ class User(Base):
 
     uuid = Column(String, primary_key=True, index=True)  # Unique user identifier
     email = Column(String, unique=True, index=True, nullable=False)  # Unique email address
-    country_code = Column(String(5), nullable=False, default="", index=True)  # Country code
     phone_number = Column(String(20), nullable=False, default="", index=True)  # Phone number
-    full_phone_number = Column(String(25), nullable=False, default="", index=True)  # Full phone number with country code
     first_name = Column(String, nullable=False)  # First name
     last_name = Column(String, nullable=False)  # Last name
     password_hash = Column(String, nullable=False)  # Hashed password

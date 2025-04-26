@@ -29,6 +29,32 @@ def send_account_creation_email(email_to: str, first_name: str, last_name: str, 
     except Exception as e:
         logging.error(f"Erreur envoi email : {e}")
 
+def send_notify_student(email_to: str, name: str,matricule: str,subject: str,message: str) -> None:
+    try:
+        # Charger et rendre le template HTML
+        template_path = Path(Config.EMAIL_TEMPLATES_DIR) / "send_notify_student.html"
+        html_content = Template(template_path.read_text(encoding="utf-8")).render(
+            name=name,
+            matricule=matricule,
+            subject=subject,
+            message=message,
+            project_name=Config.PROJECT_NAME
+        )
+        # Création et envoi de l'email
+        msg = MIMEMultipart()
+        msg["From"], msg["To"], msg["Subject"] = Config.EMAILS_FROM_CLOUDINARY, email_to, subject
+        msg.attach(MIMEText(html_content, "html"))
+
+        with smtplib.SMTP(Config.MAILTRAP_HOST, Config.MAILTRAP_PORT) as server:
+            server.starttls()
+            server.login(Config.MAILTRAP_USERNAME, Config.MAILTRAP_PASSWORD)
+            server.send_message(msg)
+
+        logging.info(f"Email envoyé à {email_to}")
+
+    except Exception as e:
+        logging.error(f"Erreur lors de l'envoi de l'email à {email_to}: {e}")
+
 
 def send_teacher_account_creation_email(email_to: str, name:str, login:str, password: str) -> None:
     try:
