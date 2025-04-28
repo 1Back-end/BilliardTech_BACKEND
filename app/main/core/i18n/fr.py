@@ -107,6 +107,10 @@ translation = {
     "subject-grades-available": "Résultats disponibles",
     "message-grades-available": "Les résultats sont désormais disponibles. Veuillez consulter les résultats sur votre espace étudiant en entrant votre matricule.",
     "notification-sent": "Les notifications ont été envoyées avec succès.",
-    "type-course-not-found" : "Type cours introuvable"
+    "type-course-not-found" : "Type cours introuvable",
+    "name-is-already-exist" : "Ce type de cours existe déjà",
+    "type-courses-created-successfully" : "Type de cours crée avec succès",
+    "type-courses-updated-successfully" : "Type de cours modifié avec succès",
+    "type-courses-deleted-successfully" : "Type de cours supprimé avec succès"
 
 }

@@ -29,7 +29,7 @@ class CRUDTypeCourses(CRUDBase[models.TypeCourse,schemas.TypeCoursesBase,schemas
             name = obj_in.name,
             added_by=added_by
         )
-        db.add()
+        db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
         return db_obj
@@ -45,3 +45,34 @@ class CRUDTypeCourses(CRUDBase[models.TypeCourse,schemas.TypeCoursesBase,schemas
         db.refresh(db_obj)
         return db_obj
     
+    @classmethod
+    def delete(cls,db:Session,*,uuid:str):
+        db_obj = cls.get_by_uuid(db=db,uuid=uuid)
+        if not db_obj:
+            raise HTTPException(status_code=404,detail=__(key="type-course-not-found"))
+        db_obj.is_deleted = False
+        db.commit()
+
+    @classmethod
+    def get_many(
+        cls,
+        db:Session,
+        page:int = 1,
+        per_page:int = 5,
+
+    ):
+        record_query = db.query(models.TypeCourse).filter(models.TypeCourse.is_deleted == False)
+
+        total = record_query.count()
+        record_query = record_query.offset((page - 1) * per_page).limit(per_page)
+
+        return schemas.TypeCoursesResponseList(
+            total = total,
+            pages = math.ceil(total/per_page),
+            per_page = per_page,
+            current_page =page,
+            data =record_query
+        )
+
+    
+type_courses = CRUDTypeCourses(models.TypeCourse)

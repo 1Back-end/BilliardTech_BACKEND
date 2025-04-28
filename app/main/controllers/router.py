@@ -16,9 +16,11 @@ from .courses_controller import router as courses
 from .teacher_course_assignment_controller import router as assignment
 # from .teachers_authentification_controller import router as teachers_authentification
 from .student_exam_notes_controller import router as exam_notes
+from .types_courses_controllers import router as type_examn
 api_router = APIRouter()
 
 api_router.include_router(migration)
+api_router.include_router(type_examn)
 # api_router.include_router(teachers_authentification)
 api_router.include_router(teacher)
 api_router.include_router(exam_notes)

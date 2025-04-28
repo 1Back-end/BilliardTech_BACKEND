@@ -106,6 +106,10 @@ translation = {
     "subject-grades-available": "Grades Available",
     "message-grades-available": "The results are now available. Please check the results in your student portal by entering your matriculation number.",
     "notification-sent": "Notifications sent successfully.",
-    "type-course-not-found" : "Type course not found"
+    "type-course-not-found" : "Type course not found",
+    "name-is-already-exist" : "Type course is already exist", 
+    "type-courses-created-successfully" :  "Type course created successfully",
+    "type-courses-updated-successfully" : "Type course updated successfully",
+    "type-courses-deleted-successfully" : "Type course deleted successfully"
 
 }

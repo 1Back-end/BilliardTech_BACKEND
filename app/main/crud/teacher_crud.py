@@ -36,15 +36,16 @@ class CRUDTeacher(CRUDBase[models.Teacher,schemas.TeacherBase,schemas.TeacherCre
     
     @classmethod
     def create(cls, db: Session, *, obj_in: schemas.TeacherCreate, added_by: str):
-        # 1. Génération du mot de passe et matricule
+        # 1. Génération du mot de passe, matricule et uuid
         password: str = generate_password(8, 8)
         print(f"User password: {password}")
         matricule = generate_matricule()
         print(f"Matricule created", matricule)
+        common_uuid = str(uuid.uuid4())  # <-- Génère un seul UUID commun
 
         # 2. Création du professeur
         db_teacher = models.Teacher(
-            uuid=str(uuid.uuid4()),
+            uuid=common_uuid,
             matricule=matricule,
             first_name=obj_in.first_name,
             last_name=obj_in.last_name,
@@ -64,14 +65,14 @@ class CRUDTeacher(CRUDBase[models.Teacher,schemas.TeacherBase,schemas.TeacherCre
 
         # 3. Création de l'utilisateur lié
         db_user = models.User(
-            uuid=str(uuid.uuid4()),
+            uuid=common_uuid,  # <-- Même UUID ici
             first_name=obj_in.first_name,
             last_name=obj_in.last_name,
             email=obj_in.email,
             phone_number=obj_in.phone_number,
             login=obj_in.login,
             password_hash=get_password_hash(password),
-            role=models.UserRole.PROFESSEUR,  # par ex: 'teacher'
+            role=models.UserRole.PROFESSEUR,
             avatar_uuid=obj_in.avatar_uuid,
         )
         db.add(db_user)
@@ -87,6 +88,7 @@ class CRUDTeacher(CRUDBase[models.Teacher,schemas.TeacherBase,schemas.TeacherCre
         )
 
         return db_teacher
+
 
 
     @classmethod
